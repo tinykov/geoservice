@@ -59,54 +59,6 @@ func generateLatLng(y0,x0 float64, radius int) s2.LatLng {
 	return latlng
 }
 
-//entry point
-func Run() {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-		})
-	//fmt.Println(client)
-	response,err2 := client.Get("city").Result()
-	if(err2 != nil){
-		log.Fatal("Error getting city cells ",err2)
-	}
-	fmt.Println(response)
-
-	//client.NewScript()
-	//-26.029246,28.033959 - wroxham
-	//-26.087295,28.048183 - sandton 
-	var ll = s2.LatLngFromDegrees(-26.087295,28.048183)
-	var answer = fmt.Sprintf("[%v, %v]", ll.Lat, ll.Lng)
-	fmt.Println(answer)
-    
-    starttime := time.Now()
-    var count = 1;
-    for i := 0; i < count; i++ {
-    	latlng := generateLatLng(-26.087295,28.048183,26000)
-    	s2cap := s2service.GetS2Cap(latlng,2680)
-    	fmt.Println(i)
-    	s2service.GetCovering(latlng,s2cap)
-	}
-	elapsed := time.Since(starttime)
-	fmt.Println("----------%s",(elapsed))
-    //---------------------------------------------------------
-    var (
-		listener net.Listener
-		err      error
-	)
-
-	if listener, err = setupServer(); err != nil {
-		fmt.Println("setupServer failed: %v...%v", err,listener)
-	}
-	fmt.Println("Server setup ... ")
-	go listenConsole()
-	select {} //lets a goroutine wait on multiple communication operations
-	
-	// Run for 10 seconds, then stop
-	//time.Sleep(time.Second * 10)
-}
-
 func setupServer() (net.Listener, error) {
 	tchan, err := tchannel.NewChannel("t-server", optsFor("TChannel-server"))
 	if err != nil {
@@ -190,6 +142,53 @@ func optsFor(processName string) *tchannel.ChannelOptions {
 	return &tchannel.ChannelOptions{
 		ProcessName: processName,
 		//Tracer: tracer,
-		Logger:      tchannel.NewLevelLogger(tchannel.SimpleLogger, tchannel.LogLevelWarn),
+		Logger: tchannel.NewLevelLogger(tchannel.SimpleLogger, tchannel.LogLevelWarn),
 	}
 }
+	//entry point
+	func Run() {
+		client := redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "", // no password set
+			DB:       0,  // use default DB
+		})
+		//fmt.Println(client)
+		response,err2 := client.Get("city").Result()
+		if(err2 != nil){
+			log.Fatal("Error getting city cells ",err2)
+		}
+		fmt.Println(response)
+
+		//client.NewScript()
+		//-26.029246,28.033959 - wroxham
+		//-26.087295,28.048183 - sandton
+		var ll = s2.LatLngFromDegrees(-26.087295,28.048183)
+		var answer = fmt.Sprintf("[%v, %v]", ll.Lat, ll.Lng)
+		fmt.Println(answer)
+
+		starttime := time.Now()
+		var count = 1;
+		for i := 0; i < count; i++ {
+			latlng := generateLatLng(-26.087295,28.048183,26000)
+			s2cap := s2service.GetS2Cap(latlng,2680)
+			fmt.Println(i)
+			s2service.GetCovering(latlng,s2cap)
+		}
+		elapsed := time.Since(starttime)
+		fmt.Println("----------%s",(elapsed))
+		//---------------------------------------------------------
+		var (
+			listener net.Listener
+			err      error
+		)
+
+		if listener, err = setupServer(); err != nil {
+			fmt.Println("setupServer failed: %v...%v", err,listener)
+		}
+		fmt.Println("Server setup ... ")
+		go listenConsole()
+		select {} //lets a goroutine wait on multiple communication operations
+
+		// Run for 10 seconds, then stop
+		//time.Sleep(time.Second * 10)
+	}
