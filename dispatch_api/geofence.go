@@ -12,25 +12,16 @@ import (
 	"os"
 	"runtime"
 	
-
 	tchannel "github.com/uber/tchannel-go"
-	//thrift "github.com/apache/thrift/lib/go/thrift"
 	thrift "github.com/uber/tchannel-go/thrift"
-	//thrift "github.com/apache/thrift/lib/go/thrift"
-	//thrift "git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 
-	//gen "goSwift-geoservice/tripservice"
 	"github.com/opentracing/opentracing-go"
 	"github.com/go-redis/redis"
 	gen "geoservice/gen-go/tripservice"
 	s2service "geoservice/s2provider"
-	//"github.com/uber/tchannel-go/raw"
 )
-
-    //git.apache.org/thrift.git/lib/go/thrift
-	//"git.apache.org/thrift.git/lib/go/thrift"
 
 func kmToAngle(km float64) s1.Angle {
 	// The Earth's mean radius in kilometers (according to NASA).
@@ -67,33 +58,6 @@ func generateLatLng(y0,x0 float64, radius int) s2.LatLng {
 
 	return latlng
 }
-
-//get region covering using an S2 cap for rider
-/*func getCovering(latlng s2.LatLng,cap s2.Cap) *s2.CellUnion {
-	starttime := time.Now()
-	rc := &s2.RegionCoverer{MinLevel: 12, MaxLevel: 16, LevelMod: 1, MaxCells: 100}
-	var region = rc.Covering(cap)
-	//fmt.Println(len(region))
-	for _, ci := range region {
-		ci++
-		//var s2_pos = ci.Pos()
-		//fmt.Printf("%d,\n",s2_pos);
-	}
-
-	elapsed := time.Since(starttime)
-	fmt.Println("----------%s",elapsed)
-	return &region
-}*/
-
-//get disk shaped S2 cap region 
-/*func getS2Cap(ll s2.LatLng,radius_meters float64) s2.Cap{
-	var radians = (2 * math.Pi) * (radius_meters /(1000 * 40075.017));
-	var point = s2.PointFromLatLng(ll);
-	var axis_height = (radians * radians)/2
-	cap := s2.CapFromCenterHeight(point,axis_height)
-	fmt.Println(cap.String())
-	return cap
-}*/
 
 //entry point
 func Run() {
@@ -137,8 +101,9 @@ func Run() {
 	}
 	fmt.Println("Server setup ... ")
 	go listenConsole()
+	select {} //lets a goroutine wait on multiple communication operation
+	
 	// Run for 10 seconds, then stop
-	select {}
 	//time.Sleep(time.Second * 10)
 }
 
