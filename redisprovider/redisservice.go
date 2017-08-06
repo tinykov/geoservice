@@ -6,8 +6,6 @@ import(
 	"os"
 	"time"
 	"reflect"
-	//"bufio"
-	//"io"
 	"bytes"
     "io/ioutil"
     "geoservice/s2provider"
@@ -93,7 +91,6 @@ func RedisVehiclesInCellArray(cellarray []string) (vehicle){
 
 func Run(){
 	initialize()
-	//cellArray := make([]uint64,0,12)
 	cellArray := []string{"2203794242663350272","2203793830346489856","2203681817599410176","2203681405282549760","2203681817599410176"}
 	args_array := make([]string,0,12)
 

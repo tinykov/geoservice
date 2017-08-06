@@ -7,7 +7,6 @@ import (
 "math/rand"
 "github.com/golang/geo/s1"
 "github.com/golang/geo/s2"
-
 )
 
 // The Earth's mean radius in kilometers (according to NASA).
@@ -45,17 +44,6 @@ func generateLatLng(y0,x0 float64, radius int) s2.LatLng {
 
 	return latlng
 }
-
-//get covering region given a LatLng and disk-shaped cap
-/*func GetCovering(latlng s2.LatLng,cap *s2.Cap) *s2.CellUnion {
-	starttime := time.Now()
-	rc := &s2.RegionCoverer{MinLevel: 12, MaxLevel: 16, LevelMod: 1, MaxCells: 100}
-	var region = rc.Covering(cap)
-	//fmt.Println(len(region))
-	elapsed := time.Since(starttime)
-	fmt.Println("-------------------------------",elapsed)
-	return &region
-}*/
 
 func GetCovering(latlng s2.LatLng,cap s2.Cap) *s2.CellUnion {
 	starttime := time.Now()

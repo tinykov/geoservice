@@ -1,10 +1,7 @@
 package dispatch_api
 
 import(
-	//"golang.org/x/net/context"
 	"fmt"
-	//"github.com/uber/tchannel-go"
-	//"github.com/uber/tchannel-go/raw"
 	"github.com/uber/tchannel-go/thrift"
 )
 

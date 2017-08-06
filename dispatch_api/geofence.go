@@ -101,7 +101,7 @@ func Run() {
 	}
 	fmt.Println("Server setup ... ")
 	go listenConsole()
-	select {} //lets a goroutine wait on multiple communication operation
+	select {} //lets a goroutine wait on multiple communication operations
 	
 	// Run for 10 seconds, then stop
 	//time.Sleep(time.Second * 10)
@@ -166,6 +166,7 @@ func (c *tripServiceHandler) GetVehiclesNearRider(ctx thrift.Context, lat float6
 	return list,nil
 }
 
+//listen on standard console for input
 func listenConsole() {
 	rdr := bufio.NewReader(os.Stdin)
 	for {
