@@ -69,11 +69,7 @@ func (c *RedisCache) Get(key string) (string, error) {
 //get vehicles near rider in redis
 func RedisVehiclesInCellArray(cellarray []string) *map[string]interface{}{
 	redis_c := RedisCache{}
-	resp, err := redis_c.GetClient().Get("city").Result()
-	fmt.Printf("city = %v\n",resp)
-	
 	key_array := []string{"1","12"}
-	fmt.Printf("RedisVehiclesInCellArray() ->args array %v\n",cellarray)
 
 	resp2,err := script1.Run(redis_c.GetClient(),key_array,cellarray[0],cellarray[1],cellarray[2],cellarray[3],
 		cellarray[4],cellarray[5],cellarray[6],cellarray[7],
@@ -86,26 +82,14 @@ func RedisVehiclesInCellArray(cellarray []string) *map[string]interface{}{
 	fmt.Println("Type of resp2 : %v",reflect.TypeOf(resp2))
 	fmt.Println("---------CJSON payload from redis ------")
 	fmt.Printf("response %v\n", resp2)
-	
-	/*const lit = 
-		'{"7448":["2203681420263724327"],' +
-		'"6975":["2203793846057184235"],' +
-		'"6320":["2203794206341922299"]}' +
-	bytes := []byte(lit)*/
+
 	var v_data map[string]interface{}
 	value, ok := resp2.(string)
 	if ok == true{
 		bytes := []byte(value)
-
 		json.Unmarshal(bytes,&v_data)
 		fmt.Println("V_DATA = %v",len(v_data))
-
 	}
-	//vehiclelist := vehicle{}p
-	/*return vehicle{
-		vehicle_id:"8888",
-		s2_pos:"2203788195349397504",
-	}*/
 	return &v_data
 }
 
