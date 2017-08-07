@@ -10,6 +10,7 @@ import(
     "io/ioutil"
     "geoservice/s2provider"
 	"github.com/go-redis/redis"
+	"encoding/json"
 	//"crypto/sha1"
 	//"encoding/hex"
 )
@@ -36,6 +37,7 @@ func readFiletoString(file string) (string) {
 }
 
 func initialize(){
+	fmt.Println("------------------------------------")
 	client = redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 		})
@@ -65,7 +67,7 @@ func (c *RedisCache) Get(key string) (string, error) {
 }
 
 //get vehicles near rider in redis
-func RedisVehiclesInCellArray(cellarray []string) (vehicle){
+func RedisVehiclesInCellArray(cellarray []string) *map[string]interface{}{
 	redis_c := RedisCache{}
 	resp, err := redis_c.GetClient().Get("city").Result()
 	fmt.Printf("city = %v\n",resp)
@@ -82,11 +84,29 @@ func RedisVehiclesInCellArray(cellarray []string) (vehicle){
 		log.Fatal("error occured %v\n",err)
 	}
 	fmt.Println("Type of resp2 : %v",reflect.TypeOf(resp2))
+	fmt.Println("---------CJSON payload from redis ------")
 	fmt.Printf("response %v\n", resp2)
-	return vehicle{
+	
+	/*const lit = 
+		'{"7448":["2203681420263724327"],' +
+		'"6975":["2203793846057184235"],' +
+		'"6320":["2203794206341922299"]}' +
+	bytes := []byte(lit)*/
+	var v_data map[string]interface{}
+	value, ok := resp2.(string)
+	if ok == true{
+		bytes := []byte(value)
+
+		json.Unmarshal(bytes,&v_data)
+		fmt.Println("V_DATA = %v",len(v_data))
+
+	}
+	//vehiclelist := vehicle{}p
+	/*return vehicle{
 		vehicle_id:"8888",
 		s2_pos:"2203788195349397504",
-	}
+	}*/
+	return &v_data
 }
 
 func Run(){
